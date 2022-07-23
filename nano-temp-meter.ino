@@ -7,7 +7,7 @@
  *
  * Install TM1637 and DHTNEW libraries in the Arduino library manager.
  *
-*/
+ */
 
 #include <TM1637Display.h>
 #include <dhtnew.h>
@@ -16,14 +16,14 @@
 #define CLK 4
 #define DIO 3
 #define DHT_DATA 2
-#define FLOAT_TO_INT(x) ((x)>=0?(uint16_t)((x)+0.5):(uint16_t)((x)-0.5))
+#define FLOAT_TO_INT(x) ((x) >= 0 ? (uint16_t)((x) + 0.5) : (uint16_t)((x)-0.5))
 
 // dht sensor pins: 1:VDD, 2:DATA, 3:GND, 4:GND
 DHTNEW mySensor(DHT_DATA);
-TM1637Display display(CLK,DIO);
+TM1637Display display(CLK, DIO);
 uint16_t temperature;
 uint8_t readResult;
-uint8_t data[] = { 0xff, 0xff, 0xff, 0xff };
+uint8_t data[] = {0xff, 0xff, 0xff, 0xff};
 uint8_t errors = 0;
 
 // showError() shows "----" on the 4-digit display
@@ -58,7 +58,7 @@ void setup() {
 void loop() {
   readResult = mySensor.read();
   // reading is not always successful
-  if(readResult == DHTLIB_OK) {
+  if (readResult == DHTLIB_OK) {
     // to drop lower precision, e.g. 25.62 -> 256, 25.68 -> 257
     temperature = FLOAT_TO_INT(mySensor.getTemperature() * 10);
     showNumber(temperature);
@@ -68,7 +68,7 @@ void loop() {
   } else {
     errors = errors + 1;
     // ignore some errors before showing on display
-    if(errors > 10) {
+    if (errors > 10) {
       showError();
     }
   }
