@@ -1,5 +1,13 @@
-#include <TM1637Display.h>  // TM1637 lib
-#include <dhtnew.h>  // DHTNEW lib
+/*
+ * Show the current temperature on an Arduino using a DHT22 sensor
+ * and a TM1637 display.
+ *
+ * Install TM1637 and DHTNEW libraries in the Arduino library manager.
+ *
+*/
+
+#include <TM1637Display.h>
+#include <dhtnew.h>
 
 #define FLOAT_TO_INT(x) ((x)>=0?(uint16_t)((x)+0.5):(uint16_t)((x)-0.5))
 
@@ -7,11 +15,7 @@
 #define DIO 3
 #define DHT_DATA 2
 
-/*
-dht sensor pins: 1:VDD, 2:DATA, 3:GND, 4:GND
-*/
-
-DHTNEW mySensor(DHT_DATA);
+DHTNEW mySensor(DHT_DATA);  // dht sensor pins: 1:VDD, 2:DATA, 3:GND, 4:GND
 TM1637Display display(CLK,DIO);
 uint16_t temperature;
 uint8_t readResult;
@@ -39,18 +43,18 @@ void showNumber(uint16_t number) {
 
 void setup() {
   display.setBrightness(3);
-  showError();  // immediately show something on power-on, better user experience
+  showError();  // immediately show something on power-on for better user experience
   mySensor.setWaitForReading(true);
-  mySensor.setTempOffset(0);  // diff from better sensor at 22 C, TODO: measure it
+  mySensor.setTempOffset(0);  // diff. from better sensor at 22 C, TODO: measure it
 }
 
 void loop() {
   readResult = mySensor.read();
-  if(readResult == DHTLIB_OK) {  // not always successful
-    temperature = FLOAT_TO_INT(mySensor.getTemperature() * 10);  // drop lower precision, 25.62 -> 256, 25.68 -> 257
+  if(readResult == DHTLIB_OK) {  // reading is not always successful
+    temperature = FLOAT_TO_INT(mySensor.getTemperature() * 10);  // drop lower precision, e.g. 25.62 -> 256, 25.68 -> 257
     showNumber(temperature);
     errors = 0;
-    delay(10000);
+    delay(10000);  // refresh only every 10s
   } else {
     errors = errors + 1;
     if(errors > 10) {  // ignore some errors before showing on display
