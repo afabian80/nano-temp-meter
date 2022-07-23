@@ -18,8 +18,8 @@ uint8_t readResult;
 uint8_t data[] = { 0xff, 0xff, 0xff, 0xff };
 uint8_t errors = 0;
 
+// showError() shows "----" on the 4-digit display
 void showError() {
-  // show "----"
   data[0] = SEG_G;
   data[1] = SEG_G;
   data[2] = SEG_G;
@@ -28,6 +28,7 @@ void showError() {
   delay(500);
 }
 
+// showNumber(...) example: show 256 as "25_6" on the 4-digit display
 void showNumber(uint16_t number) {
   data[0] = display.encodeDigit(number / 100 % 10);
   data[1] = display.encodeDigit(number / 10 % 10);
@@ -38,14 +39,14 @@ void showNumber(uint16_t number) {
 
 void setup() {
   display.setBrightness(3);
-  showError();  // immediately show something on power-on
+  showError();  // immediately show something on power-on, better user experience
   mySensor.setWaitForReading(true);
-  mySensor.setTempOffset(0);  // diff from better sensor at 22 C
+  mySensor.setTempOffset(0);  // diff from better sensor at 22 C, TODO: measure it
 }
 
 void loop() {
   readResult = mySensor.read();
-  if(readResult == DHTLIB_OK) {
+  if(readResult == DHTLIB_OK) {  // not always successful
     temp = FLOAT_TO_INT(mySensor.getTemperature() * 10);  // drop lower precision, 25.62 -> 256, 25.68 -> 257
     showNumber(temp);
     errors = 0;
