@@ -18,7 +18,8 @@
 #define DHT_DATA 2
 #define FLOAT_TO_INT(x) ((x)>=0?(uint16_t)((x)+0.5):(uint16_t)((x)-0.5))
 
-DHTNEW mySensor(DHT_DATA);  // dht sensor pins: 1:VDD, 2:DATA, 3:GND, 4:GND
+// dht sensor pins: 1:VDD, 2:DATA, 3:GND, 4:GND
+DHTNEW mySensor(DHT_DATA);
 TM1637Display display(CLK,DIO);
 uint16_t temperature;
 uint8_t readResult;
@@ -46,21 +47,28 @@ void showNumber(uint16_t number) {
 
 void setup() {
   display.setBrightness(3);
-  showError();  // immediately show something on power-on for better user experience
-  mySensor.setWaitForReading(true);  // to block execution while reading is not ready
-  mySensor.setTempOffset(TEMP_OFFSET);  // measured difference from better sensor at 22 C
+  // immediately show something on power-on for better user experience
+  showError();
+  // block execution while reading is not ready
+  mySensor.setWaitForReading(true);
+  // measured difference from better sensor at 22 C
+  mySensor.setTempOffset(TEMP_OFFSET);
 }
 
 void loop() {
   readResult = mySensor.read();
-  if(readResult == DHTLIB_OK) {  // reading is not always successful
-    temperature = FLOAT_TO_INT(mySensor.getTemperature() * 10);  // to drop lower precision, e.g. 25.62 -> 256, 25.68 -> 257
+  // reading is not always successful
+  if(readResult == DHTLIB_OK) {
+    // to drop lower precision, e.g. 25.62 -> 256, 25.68 -> 257
+    temperature = FLOAT_TO_INT(mySensor.getTemperature() * 10);
     showNumber(temperature);
     errors = 0;
-    delay(10000);  // refresh only every 10s
+    // refresh only every 10s
+    delay(10000);
   } else {
     errors = errors + 1;
-    if(errors > 10) {  // ignore some errors before showing on display
+    // ignore some errors before showing on display
+    if(errors > 10) {
       showError();
     }
   }
