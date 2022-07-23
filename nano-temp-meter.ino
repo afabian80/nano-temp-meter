@@ -16,9 +16,17 @@ uint8_t readResult;
 uint8_t data[] = { 0xff, 0xff, 0xff, 0xff };
 uint8_t errors = 0;
 
+void showError() {
+  data[0] = SEG_G;
+  data[1] = SEG_G;
+  data[2] = SEG_G;
+  data[3] = SEG_G;
+  display.setSegments(data);
+}
+
 void setup() {
-  mySensor.setWaitForReading(true);
   display.setBrightness(3);
+  mySensor.setWaitForReading(true);
 }
 
 void loop() {
@@ -29,16 +37,13 @@ void loop() {
     data[1] = display.encodeDigit(temp / 10 % 10);
     data[2] = SEG_D;
     data[3] = display.encodeDigit(temp % 10);
+    display.setSegments(data);
     errors = 0;
     delay(10000);
   } else {
     errors = errors + 1;
     if(errors > 10) {
-      data[0] = SEG_G;
-      data[1] = SEG_G;
-      data[2] = SEG_G;
-      data[3] = SEG_G;
+      showError();
     }
   }
-  display.setSegments(data);
 }
