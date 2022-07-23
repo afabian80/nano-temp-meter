@@ -36,7 +36,7 @@ void showNumber(uint16_t number) {
 
 void setup() {
   display.setBrightness(3);
-  showError();
+  showError();  // immediately show something on power-on
   mySensor.setWaitForReading(true);
 }
 
@@ -49,7 +49,7 @@ void loop() {
     delay(10000);
   } else {
     errors = errors + 1;
-    if(errors > 10) {
+    if(errors > 10) {  // ignore some errors before showing on display
       showError();
     }
   }
