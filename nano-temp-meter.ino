@@ -12,6 +12,7 @@
 #include <TM1637Display.h>
 #include <dhtnew.h>
 
+// the reference device showed 0.7 C less
 #define TEMP_OFFSET -0.7f
 #define CLK 4
 #define DIO 3
@@ -51,7 +52,7 @@ void setup() {
   showError();
   // block execution while reading is not ready
   mySensor.setWaitForReading(true);
-  // measured difference from better sensor at 22 C
+  // measured difference from better sensor at 27 C
   mySensor.setTempOffset(TEMP_OFFSET);
 }
 
@@ -59,11 +60,12 @@ void loop() {
   readResult = mySensor.read();
   // reading is not always successful
   if (readResult == DHTLIB_OK) {
-    // to drop lower precision, e.g. 25.62 -> 256, 25.68 -> 257
+    // drop lower precision digits, multiply by 10 and round to integer
+    // e.g. 25.62 -> 256, 25.68 -> 257
     temperature = FLOAT_TO_INT(mySensor.getTemperature() * 10);
     showNumber(temperature);
     errors = 0;
-    // refresh only every 10s
+    // refresh roughly every 10s
     delay(10000);
   } else {
     errors = errors + 1;
