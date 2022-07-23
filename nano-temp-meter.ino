@@ -13,7 +13,7 @@ dht sensor pins: 1:VDD, 2:DATA, 3:GND, 4:GND
 
 DHTNEW mySensor(DHT_DATA);
 TM1637Display display(CLK,DIO);
-uint16_t temp;
+uint16_t temperature;
 uint8_t readResult;
 uint8_t data[] = { 0xff, 0xff, 0xff, 0xff };
 uint8_t errors = 0;
@@ -47,8 +47,8 @@ void setup() {
 void loop() {
   readResult = mySensor.read();
   if(readResult == DHTLIB_OK) {  // not always successful
-    temp = FLOAT_TO_INT(mySensor.getTemperature() * 10);  // drop lower precision, 25.62 -> 256, 25.68 -> 257
-    showNumber(temp);
+    temperature = FLOAT_TO_INT(mySensor.getTemperature() * 10);  // drop lower precision, 25.62 -> 256, 25.68 -> 257
+    showNumber(temperature);
     errors = 0;
     delay(10000);
   } else {
