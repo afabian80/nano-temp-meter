@@ -1,6 +1,8 @@
 #include <TM1637Display.h>  // TM1637 lib
 #include <dhtnew.h>  // DHTNEW lib
 
+#define FLOAT_TO_INT(x) ((x)>=0?(uint16_t)((x)+0.5):(uint16_t)((x)-0.5))
+
 #define CLK 4
 #define DIO 3
 #define DHT_DATA 2
@@ -38,14 +40,13 @@ void setup() {
   display.setBrightness(3);
   showError();  // immediately show something on power-on
   mySensor.setWaitForReading(true);
+  mySensor.setTempOffset(0);  // diff from better sensor at 22 C
 }
 
 void loop() {
   readResult = mySensor.read();
   if(readResult == DHTLIB_OK) {
-    temp = mySensor.getTemperature();  // convert from float implicitly
-    temp = temp * 10;  // easier to handle and display
-    temp = temp - 9;   // diff from better sensor at 22 C
+    temp = FLOAT_TO_INT(mySensor.getTemperature() * 10);  // drop lower precision, 25.62 -> 256, 25.68 -> 257
     showNumber(temp);
     errors = 0;
     delay(10000);
