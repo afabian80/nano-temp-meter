@@ -17,15 +17,26 @@ uint8_t data[] = { 0xff, 0xff, 0xff, 0xff };
 uint8_t errors = 0;
 
 void showError() {
+  // show "----"
   data[0] = SEG_G;
   data[1] = SEG_G;
   data[2] = SEG_G;
   data[3] = SEG_G;
   display.setSegments(data);
+  delay(500);
+}
+
+void showNumber(uint16_t number) {
+  data[0] = display.encodeDigit(number / 100 % 10);
+  data[1] = display.encodeDigit(number / 10 % 10);
+  data[2] = SEG_D;
+  data[3] = display.encodeDigit(number % 10);
+  display.setSegments(data);
 }
 
 void setup() {
   display.setBrightness(3);
+  showError();
   mySensor.setWaitForReading(true);
 }
 
@@ -33,11 +44,7 @@ void loop() {
   readResult = mySensor.read();
   if(readResult == DHTLIB_OK) {
     temp = mySensor.getTemperature() * 10 - 9;  // diff from better sensor at 22 C
-    data[0] = display.encodeDigit(temp / 100 % 10);
-    data[1] = display.encodeDigit(temp / 10 % 10);
-    data[2] = SEG_D;
-    data[3] = display.encodeDigit(temp % 10);
-    display.setSegments(data);
+    showNumber(temp);
     errors = 0;
     delay(10000);
   } else {
