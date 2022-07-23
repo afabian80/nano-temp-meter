@@ -43,7 +43,9 @@ void setup() {
 void loop() {
   readResult = mySensor.read();
   if(readResult == DHTLIB_OK) {
-    temp = mySensor.getTemperature() * 10 - 9;  // diff from better sensor at 22 C
+    temp = mySensor.getTemperature();  // convert from float implicitly
+    temp = temp * 10;  // easier to handle and display
+    temp = temp - 9;   // diff from better sensor at 22 C
     showNumber(temp);
     errors = 0;
     delay(10000);
